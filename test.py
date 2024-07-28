@@ -1,4 +1,11 @@
-import example as m
+import torch
+import bin.micro_kernel as m
 
-assert m.add(1, 2) == 3
+
+t1 = torch.ones (5)
+t2 = torch.ones (5)
+
+print (m.add(0, 0))
+
+
 print ("Hello world!")
