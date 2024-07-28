@@ -14,7 +14,10 @@ BIN_DIR := bin
 SRC_DIR := src
 SRC_OBJS := main.o 
 
-default: run
+default: cg
+
+cg:
+	python3 setup.py install --force
 
 run: clean driver
 	./$(BIN_DIR)/$(DRIVER)
