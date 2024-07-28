@@ -1,5 +1,7 @@
 #include <pybind11/pybind11.h>
+#include <torch/extension.h>
 namespace py = pybind11;
+
 
 float* add(float* t1, float* t2) {
   // for (int i = 0; i < 5; i++) {

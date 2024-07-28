@@ -15,7 +15,7 @@ IFLAGS := $(PYTHON_INCLUDE) $(foreach includedir,$(INCLUDES),-I$(includedir))
 
 # Compiler Flags
 OPT := -O1
-CFLAGS := $(OPT) -O3 -Wall -shared -fPIC
+CFLAGS := $(OPT) -Wall -shared -fPIC
 
 # Directory Paths
 BIN_DIR := bin
@@ -27,7 +27,7 @@ OUTPUT := micro_kernel
 default: run_test
 
 build_extension:
-	$(CC) $(CFLAGS) $(IFLAGS) $(SRC_DIR)/$(SRC_OBJS).c -o $(BIN_DIR)/$(OUTPUT)$(SUFFIX)
+	$(CC) $(CFLAGS) $(IFLAGS) $(SRC_DIR)/$(SRC_OBJS).cpp -o $(BIN_DIR)/$(OUTPUT)$(SUFFIX)
 
 run_test: build_extension
 	python3 test.py
