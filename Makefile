@@ -1,17 +1,22 @@
 # Meta Symbols
 CC := c++
 LINKER := $(CC)
-DRIVER := driver.x
 
 # Include Header Files
 PYTHON_INCLUDE := $(shell python3-config --includes) 
 PYBIND := extern/pybind11/include
-PYTHON_HEADER_DIR := $(shell python -c 'from distutils.sysconfig import get_python_inc; print(get_python_inc())')
+# PYTHON_HEADER_DIR := $(shell python -c 'from distutils.sysconfig import get_python_inc; print(get_python_inc())')
 PYTORCH_HEADER := $(shell python -c 'from torch.utils.cpp_extension import include_paths; [print(p) for p in include_paths()]')
+CUDA_DIR := $(shell python -c 'from torch.utils.cpp_extension import _find_cuda_home; print(_find_cuda_home())')/include
+INCLUDES :=  ./ $(CUDA_DIR)/include
 INCLUDES += $(PYBIND) 
-INCLUDES += $(PYTHON_HEADER_DIR)
+# INCLUDES += $(PYTHON_HEADER_DIR)
 INCLUDES += $(PYTORCH_HEADER)
-IFLAGS := $(PYTHON_INCLUDE) $(foreach includedir,$(INCLUDES),-I$(includedir))
+LINK := $(shell python -c 'from torch.utils.cpp_extension import library_paths; [print(p) for p in library_paths()]')
+
+LFLAGS := $(foreach includedir,$(LINK),-L$(includedir)) 
+IFLAGS := $(PYTHON_INCLUDE) $(foreach includedir,$(INCLUDES),-I$(includedir)) -DTORCH_API_INCLUDE_EXTENSION_H
+
 
 # Compiler Flags
 OPT := -O1
@@ -27,7 +32,7 @@ OUTPUT := micro_kernel
 default: run_test
 
 build_extension:
-	$(CC) $(CFLAGS) $(IFLAGS) $(SRC_DIR)/$(SRC_OBJS).cpp -o $(BIN_DIR)/$(OUTPUT)$(SUFFIX)
+	$(CC) $(CFLAGS) $(IFLAGS) $(SRC_DIR)/$(SRC_OBJS).cpp -o $(BIN_DIR)/$(OUTPUT)$(SUFFIX) $(LFLAGS)
 
 run_test: build_extension
 	python3 test.py
